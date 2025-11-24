@@ -3,8 +3,10 @@
 import jbookLogo from "@/app/favicon.ico";
 import {
   Avatar,
+  Checkbox,
   Dialog,
   FormControlLabel,
+  FormGroup,
   InputAdornment,
   Radio,
   RadioGroup,
@@ -16,7 +18,7 @@ import { FaSearch } from "react-icons/fa";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoShieldCheckmarkSharp } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -27,6 +29,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { RiErrorWarningFill } from "react-icons/ri";
+import { IoMdClose } from "react-icons/io";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -43,16 +47,19 @@ const VisuallyHiddenInput = styled("input")({
 const DefaultNavBar = () => {
   const [userAccAnchor, setUserAccAnchor] = useState<null | HTMLElement>(null);
   const [settingDialog, setSettingDialog] = useState<boolean>(true);
-  const [settingActiveTab, setSettingActiveTab] = useState<number>(0);
+  const [settingActiveTab, setSettingActiveTab] = useState<number>(1);
   const [accountPassEye, setAccountPassEye] = useState<boolean>(false);
   const UserAcc = Boolean(userAccAnchor);
+  const [accounts, setAccounts] = useState([
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  ]);
 
   const openSettingDialog = () => {
     setSettingDialog(true);
   };
 
   const closeSettingDialog = () => {
-    setSettingDialog(true);
+    setSettingDialog(false);
   };
 
   const openUserAccMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -194,7 +201,7 @@ const DefaultNavBar = () => {
         {/* Settings Dialog */}
         <Dialog
           fullWidth={true}
-          maxWidth={"lg"}
+          maxWidth={"md"}
           open={settingDialog}
           onClose={closeSettingDialog}
           sx={{
@@ -203,7 +210,7 @@ const DefaultNavBar = () => {
             },
           }}
         >
-          <div className="h-[calc(100vh-120px)] max-h-[calc(100vh-120px) bg-white flex overflow-hidden">
+          <div className="relative h-[calc(100vh-120px)] max-h-[calc(100vh-120px) bg-white flex overflow-hidden">
             {/* Tabs */}
             <div className="w-[220px] bg-[#fcfaf8]">
               <p className="p-3 font-semibold border-e border-e-slate-200">
@@ -222,13 +229,13 @@ const DefaultNavBar = () => {
                     height: "100%",
                   },
                   "& .MuiTabs-indicator": {
-                    backgroundColor: "#e1533c",
+                    backgroundColor: "#e1533c !important",
                   },
                   "& .Mui-selected": {
-                    color: "#e1533c",
+                    color: "#e1533c !important",
                   },
                   "& .MuiTab-root": {
-                    alignItems: "flex-start",
+                    alignItems: "flex-start !important",
                   },
                 }}
               >
@@ -242,9 +249,16 @@ const DefaultNavBar = () => {
               {/* Accounts */}
               {settingActiveTab === 0 && (
                 <div className="">
-                  <p className="z-10 sticky top-0 p-4 font-semibold bg-white border-b border-slate-200">
-                    Account
-                  </p>
+                  <div className="z-10 sticky top-0 p-4 font-semibold bg-white border-b border-slate-200 flex justify-between">
+                    <p>Account</p>
+                    <button
+                      type="button"
+                      onClick={closeSettingDialog}
+                      className="cursor-pointer"
+                    >
+                      <IoMdClose className="text-2xl text-red-500 z-1000" />
+                    </button>
+                  </div>
 
                   <form className="p-4">
                     {/* Photo */}
@@ -490,251 +504,164 @@ const DefaultNavBar = () => {
               )}
 
               {/* Merge */}
-              {settingActiveTab === 0 && (
+              {settingActiveTab === 1 && (
                 <div className="">
-                  <p className="z-10 sticky top-0 p-4 font-semibold bg-white border-b border-slate-200">
-                    Account
-                  </p>
-
-                  <form className="p-4">
-                    {/* Photo */}
-                    <div className="mb-7">
-                      <p className="font-semibold mb-2">Photon</p>
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <Avatar
-                            alt="Remy Sharp"
-                            src="/userDefaultPic.jpg"
-                            sx={{ width: "90px", height: "90px" }}
-                          />
-                        </div>
-                        <div>
-                          <div className="flex gap-2">
-                            <label>
-                              <p className="inline-block px-2.5 py-1.5 text-sm rounded-md bg-primary text-white font-semibold cursor-pointer">
-                                Choose photo
-                              </p>
-                              <VisuallyHiddenInput
-                                type="file"
-                                onChange={(event) =>
-                                  console.log(event.target.files)
-                                }
-                                multiple
-                              />
-                            </label>
-                            <button
-                              type="button"
-                              className="px-2.5 py-1.5 text-sm rounded-md bg-red-600 text-white font-semibold cursor-pointer"
-                            >
-                              Remove photo
-                            </button>
-                          </div>
-                          {/* <p className="text-red-500 text-sm px-3 py-1">Error</p> */}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Username */}
-                    <div className="mb-3 ">
-                      <Controller
-                        name="settings_username"
-                        control={accountControl}
-                        render={({ field: { value, onChange, name } }) => (
-                          <TextField
-                            label="Username"
-                            name={name}
-                            value={value}
-                            onChange={onChange}
-                            variant="outlined"
-                            className="w-[400px]"
-                            error={
-                              accountErrors.settings_username?.message
-                                ? true
-                                : false
-                            }
-                            helperText={
-                              accountErrors.settings_username?.message
-                                ? `${accountErrors.settings_username.message}`
-                                : " "
-                            }
-                          />
-                        )}
-                      />
-                    </div>
-
-                    {/* Birthdate */}
-                    <div className="mb-3">
-                      <Controller
-                        name="account_dob"
-                        control={accountControl}
-                        render={({ field: { value, onChange, name } }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              name={name}
-                              label="Birthdate"
-                              format="DD-MM-YYYY"
-                              value={value ? dayjs(value) : dayjs("DD-MM-YYYY")}
-                              onChange={onChange}
-                              slotProps={{
-                                textField: {
-                                  error: accountErrors.account_dob?.message
-                                    ? true
-                                    : false,
-                                  helperText: accountErrors.account_dob?.message
-                                    ? `${accountErrors.account_dob.message}`
-                                    : " ",
-                                },
-                              }}
-                              sx={{
-                                "&.MuiPickersTextField-root": {
-                                  width: "400px",
-                                },
-                              }}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      />
-                    </div>
-
-                    {/* Gender */}
-                    <div className="mb-2">
-                      <Controller
-                        name="account_gender"
-                        control={accountControl}
-                        render={({ field: { name, value, onChange } }) => (
-                          <div className="w-[400px]">
-                            <div className="px-2 flex items-center gap-3">
-                              <p className="font-medium">Gender : </p>
-                              <RadioGroup
-                                row
-                                name={name}
-                                value={value}
-                                onChange={onChange}
-                              >
-                                <FormControlLabel
-                                  value="male"
-                                  control={<Radio />}
-                                  label="Male"
-                                />
-                                <FormControlLabel
-                                  value="female"
-                                  control={<Radio />}
-                                  label="Female"
-                                />
-                              </RadioGroup>
-                            </div>
-                            <p className="text-xs px-3.5 text-[#D32F2F]">
-                              {accountErrors.account_gender?.message ? (
-                                `${accountErrors.account_gender.message}`
-                              ) : (
-                                <>&nbsp;</>
-                              )}
-                            </p>
-                          </div>
-                        )}
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="mb-2">
-                      <Controller
-                        name="account_email"
-                        control={accountControl}
-                        render={({ field: { value, onChange, name } }) => (
-                          <TextField
-                            label="Email"
-                            placeholder="Enter email "
-                            name={name}
-                            value={"user@g.com"}
-                            disabled
-                            onChange={onChange}
-                            variant="outlined"
-                            className="w-[400px]"
-                            error={false}
-                            helperText={" "}
-                          />
-                        )}
-                      />
-                    </div>
-
-                    {/* Sign up Password */}
-                    <div className="mb-2">
-                      <div>
-                        <Controller
-                          name="account_password"
-                          control={accountControl}
-                          render={({ field: { value, onChange, name } }) => (
-                            <TextField
-                              type={accountPassEye ? "text" : "password"}
-                              label="Password"
-                              placeholder="Enter password "
-                              name={name}
-                              value={value}
-                              disabled
-                              onChange={onChange}
-                              variant="outlined"
-                              className="w-[400px]"
-                              slotProps={{
-                                input: {
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          setAccountPassEye(!accountPassEye)
-                                        }
-                                      >
-                                        {accountPassEye ? (
-                                          <VisibilityOff />
-                                        ) : (
-                                          <Visibility />
-                                        )}
-                                      </button>
-                                    </InputAdornment>
-                                  ),
-                                },
-                              }}
-                              error={
-                                accountErrors.account_password?.message
-                                  ? true
-                                  : false
-                              }
-                              helperText={
-                                accountErrors.account_password?.message
-                                  ? `${accountErrors.account_password.message}`
-                                  : " "
-                              }
-                            />
-                          )}
-                        />
-                      </div>
-
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          className="px-2.5 py-1.5 text-sm rounded-md bg-primary text-white font-semibold cursor-pointer"
-                        >
-                          Change Password
-                        </button>
-                        <button
-                          type="button"
-                          className="px-2.5 py-1.5 text-sm rounded-md bg-primary text-white font-semibold cursor-pointer"
-                        >
-                          Add Password
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-
-                  <div className="p-4">
-                    <p className="font-semibold mb-3">Delete Account:&nbsp;</p>
-
+                  <div className="z-10 sticky top-0 p-4 font-semibold bg-white border-b border-slate-200 flex justify-between">
+                    <p>Merge</p>
                     <button
                       type="button"
-                      className="px-2.5 py-1.5 text-sm rounded-md bg-red-600 text-white font-semibold cursor-pointer"
+                      onClick={closeSettingDialog}
+                      className="cursor-pointer"
                     >
-                      Delete
+                      <IoMdClose className="text-2xl text-red-500" />
                     </button>
+                  </div>
+
+                  <div className="p-4">
+                    {/* Connected acc. */}
+                    <div className="mb-5">
+                      <p className="font-semibold">Connected Account</p>
+                      <div className="ms-3">
+                        <RadioGroup
+                          defaultValue={"abc1@g.com"}
+                          sx={{
+                            "& .Mui-checked": {
+                              color: "#e1533c",
+                            },
+                          }}
+                        >
+                          <table className="max-w-[500px]">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <FormControlLabel
+                                    value="abc1@g.com"
+                                    control={<Radio disabled />}
+                                    label="abc1@g.com"
+                                  />
+                                </td>
+                                <td>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      className="w-[100px] flex items-center gap-1 text-sm bg-green-600 text-white px-2 py-1 rounded-sm cursor-pointer"
+                                    >
+                                      <IoShieldCheckmarkSharp className="text-lg" />
+                                      <span>Verified</span>
+                                    </button>
+                                  </div>
+                                </td>
+                                <td>
+                                  <p className="text-xs text-blue-700">
+                                    Primary
+                                  </p>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td>
+                                  <FormControlLabel
+                                    value="abc2@g.com"
+                                    control={<Radio disabled />}
+                                    label="abc2@g.com"
+                                  />
+                                </td>
+                                <td>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      className="w-[100px] flex items-center gap-1 text-sm bg-red-700 text-white px-2 py-1 rounded-sm cursor-pointer"
+                                    >
+                                      <RiErrorWarningFill className="text-lg" />
+                                      <span>Verify</span>
+                                    </button>
+                                  </div>
+                                </td>
+                                <td>
+                                  <p className="text-xs text-slate-600">
+                                    Secondary
+                                  </p>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </RadioGroup>
+                      </div>
+                    </div>
+
+                    {/* Add account */}
+                    <div>
+                      <p className="font-semibold mb-5">
+                        Want to add/merge account?
+                      </p>
+
+                      <div className="max-w-[500px]">
+                        {/* Search bar */}
+                        <form className="mb-4">
+                          <Controller
+                            name="account_search"
+                            control={control}
+                            render={({ field: { value, onChange, name } }) => (
+                              <TextField
+                                type="text"
+                                label="Account"
+                                placeholder="Search account"
+                                size="small"
+                                name={name}
+                                value={value}
+                                slotProps={{
+                                  input: {
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        <button
+                                          type="button"
+                                          className="cursor-pointer"
+                                          onClick={() => {}}
+                                        >
+                                          <FaSearch className="text-xl" />
+                                        </button>
+                                      </InputAdornment>
+                                    ),
+                                  },
+                                }}
+                                onChange={onChange}
+                                variant="outlined"
+                                className="w-full"
+                                error={
+                                  errors.account_search?.message ? true : false
+                                }
+                              />
+                            )}
+                          />
+                        </form>
+
+                        <div className="max-h-[250px] overflow-y-auto mb-5">
+                          <FormGroup>
+                            <ul className="ms-4">
+                              {/* Accounts list */}
+                              {accounts &&
+                                accounts.map((acc, inx) => (
+                                  <li key={`user-acc-${inx}`}>
+                                    <FormControlLabel
+                                      control={<Checkbox />}
+                                      label={`abc${acc}@g.com`}
+                                    />
+                                  </li>
+                                ))}
+                            </ul>
+                          </FormGroup>
+                        </div>
+
+                        <div className="text-center">
+                          <button
+                            type="button"
+                            className="px-3 py-2 text-sm rounded-md bg-primary text-white font-semibold cursor-pointer"
+                          >
+                            Merge All
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
